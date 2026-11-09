@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#193f31">
+    <title>VALOOR | Encuentra tu próximo reto</title>
+    <link rel="stylesheet" th:href="@{/css/valoor.css}">
+    <script defer th:src="@{/js/valoor.js}"></script>
+</head>
+<body>
+    <div class="topline">EQUÍPATE PARA LO QUE TE MUEVE · COMPRA CON CONFIANZA</div>
+    <div th:replace="~{fragments/layout :: navigation}"></div>
+    <main class="shell">
+        <section class="hero">
+            <div class="hero-copy">
+                <span class="eyebrow">Tu próxima meta empieza aquí</span>
+                <h1>Encuentra el equipo para ir más lejos.</h1>
+                <p>Explora artículos elegidos para acompañarte en cada entrenamiento, partido y aventura.</p>
+                <a class="button button-light" href="#productos">Descubrir productos <span aria-hidden="true">→</span></a>
+            </div>
+        </section>
+
+        <section aria-labelledby="catalog-title">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">La selección VALOOR</span>
+                    <h2 id="catalog-title">Encuentra tu disciplina</h2>
+                </div>
+                <span th:text="${productos.totalElements + ' productos'}">0 productos</span>
+            </div>
+            <form class="filters" method="get" th:action="@{/catalogo}">
+                <input name="nombre" placeholder="¿Qué estás buscando?" aria-label="Buscar por nombre"
+                       th:value="${nombre}">
+                <select name="idDeporte" aria-label="Filtrar por deporte">
+                    <option value="">Todos los deportes</option>
+                    <option th:each="deporte : ${deportes}" th:value="${deporte.idDeporte}"
+                            th:text="${deporte.nombre}" th:selected="${idDeporte == deporte.idDeporte}"></option>
+                </select>
+                <select name="idCategoria" aria-label="Filtrar por categoría">
+                    <option value="">Todas las categorías</option>
+                    <option th:each="categoria : ${categorias}" th:value="${categoria.idCategoria}"
+                            th:text="${categoria.nombre}" th:selected="${idCategoria == categoria.idCategoria}"></option>
+                </select>
+                <input name="marca" placeholder="Marca" aria-label="Filtrar por marca" th:value="${marca}">
+                <input name="talla" placeholder="Talla" aria-label="Filtrar por talla" th:value="${talla}">
+                <button class="button" type="submit">Aplicar filtros</button>
+                <input name="precioMinimo" type="number" min="0" step="0.01" placeholder="Desde $"
+                       aria-label="Precio mínimo" th:value="${precioMinimo}">
+                <input name="precioMaximo" type="number" min="0" step="0.01" placeholder="Hasta $"
+                       aria-label="Precio máximo" th:value="${precioMaximo}">
+            </form>
+        </section>
+
+        <section id="productos" class="product-grid" aria-label="Productos">
+            <article class="product-card" th:each="producto : ${productos.content}">
+                <a th:href="@{/producto/{id}(id=${producto.idProducto})}" class="product-image">
+                    <img th:if="${producto.imagenUrl != null and !producto.imagenUrl.isBlank()}"
+                         th:src="${producto.imagenUrl}" th:alt="${producto.nombre}" loading="lazy">
+                    <span th:unless="${producto.imagenUrl != null and !producto.imagenUrl.isBlank()}"
+                          class="image-placeholder" aria-hidden="true">◈</span>
+                </a>
+                <div class="product-info">
+                    <span class="tag" th:text="${producto.marca != null ? producto.marca : 'VALOOR'}">Marca</span>
+                    <h3 th:text="${producto.nombre}">Producto deportivo</h3>
+                    <p th:text="${producto.descripcion != null ? producto.descripcion : 'Listo para acompañarte en tu próximo desafío.'}">
+                        Descripción del producto
+                    </p>
+                    <div class="product-price"
+                         th:text="${'$ ' + #numbers.formatDecimal(producto.precio, 1, 'POINT', 2, 'COMMA')}">$ 0,00</div>
+                </div>
+            </article>
+        </section>
+        <div class="empty-state" th:if="${productos.totalElements == 0}">
+            <h3>No encontramos productos con esos filtros</h3>
+            <p>Prueba cambiando el deporte, la talla o el rango de precio.</p>
+            <a class="button button-small" th:href="@{/catalogo}">Ver todo el catálogo</a>
+        </div>
+        <nav class="pager" th:if="${productos.totalPages > 1}" aria-label="Paginación del catálogo">
+            <a th:if="${productos.hasPrevious()}"
+               th:href="@{/catalogo(pagina=${productos.number - 1},nombre=${nombre},idDeporte=${idDeporte},idCategoria=${idCategoria},marca=${marca},talla=${talla},precioMinimo=${precioMinimo},precioMaximo=${precioMaximo})}">← Anterior</a>
+            <span th:text="${'Página ' + (productos.number + 1) + ' de ' + productos.totalPages}">Página 1 de 1</span>
+            <a th:if="${productos.hasNext()}"
+               th:href="@{/catalogo(pagina=${productos.number + 1},nombre=${nombre},idDeporte=${idDeporte},idCategoria=${idCategoria},marca=${marca},talla=${talla},precioMinimo=${precioMinimo},precioMaximo=${precioMaximo})}">Siguiente →</a>
+        </nav>
+    </main>
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

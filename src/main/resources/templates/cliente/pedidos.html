@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mis pedidos | VALOOR</title>
+    <link rel="stylesheet" th:href="@{/css/valoor.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: navigation}"></div>
+    <header class="admin-header">
+        <div class="shell">
+            <span class="eyebrow">Tu recorrido</span>
+            <h1>Mis pedidos</h1>
+            <p>Consulta el estado y los detalles de tus compras.</p>
+        </div>
+    </header>
+    <main class="shell dashboard">
+        <section class="panel">
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Pedido</th><th>Fecha</th><th>Estado</th><th>Artículos</th><th>Total</th></tr></thead>
+                    <tbody>
+                        <tr th:each="pedido : ${pedidos}">
+                            <td th:text="${'#' + pedido.idPedido}">#0</td>
+                            <td th:text="${pedido.fecha != null ? #temporals.format(pedido.fecha, 'dd/MM/yyyy HH:mm') : '—'}">—</td>
+                            <td><span class="status" th:text="${pedido.estado}">PENDIENTE</span></td>
+                            <td>
+                                <span th:each="detalle, iter : ${pedido.detalles}">
+                                    <span th:text="${detalle.producto.nombre + ' · ' + detalle.talla + ' × ' + detalle.cantidad}">Producto</span><br>
+                                </span>
+                            </td>
+                            <td th:text="${'$ ' + #numbers.formatDecimal(pedido.total, 1, 'POINT', 2, 'COMMA')}">$ 0</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(pedidos)}">
+                            <td colspan="5">Aún no tienes pedidos. <a class="eyebrow" th:href="@{/catalogo}">Explora el catálogo</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

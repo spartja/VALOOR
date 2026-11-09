@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="navigation" class="navbar">
+    <div class="shell nav-inner">
+        <a class="brand" th:href="@{/}">
+            <span class="brand-mark">V</span><span>VALOOR</span>
+        </a>
+        <nav class="nav-links" aria-label="Navegación principal">
+            <a th:href="@{/catalogo}">Catálogo</a>
+            <a th:if="${esAdministrador}" th:href="@{/admin}">Administración</a>
+            <a th:if="${usuarioAutenticado != null and !esAdministrador}" th:href="@{/mis-pedidos}">Mis pedidos</a>
+        </nav>
+        <div class="nav-account">
+            <span th:if="${usuarioAutenticado != null}" th:text="${usuarioAutenticado}">usuario</span>
+            <form th:if="${usuarioAutenticado != null}" th:action="@{/logout}" method="post">
+                <button type="submit">Salir</button>
+            </form>
+            <a th:if="${usuarioAutenticado == null}" th:href="@{/login}">Iniciar sesión</a>
+            <a th:if="${usuarioAutenticado == null}" class="button button-small" th:href="@{/registro}">Crear cuenta</a>
+        </div>
+    </div>
+</header>
+
+<footer th:fragment="footer" class="footer">
+    <div class="shell footer-row">
+        <a class="brand" th:href="@{/}"><span class="brand-mark">V</span><span>VALOOR</span></a>
+        <span>Movimiento, rendimiento y pasión por el deporte.</span>
+        <span>© 2026 VALOOR</span>
+    </div>
+</footer>
+</body>
+</html>

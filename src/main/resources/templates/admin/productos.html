@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Productos | Administración VALOOR</title>
+    <link rel="stylesheet" th:href="@{/css/valoor.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: navigation}"></div>
+    <header class="admin-header">
+        <div class="shell">
+            <span class="eyebrow">Inventario de tienda</span>
+            <h1>Gestiona tus productos</h1>
+            <p>Crea, actualiza y publica el catálogo de VALOOR.</p>
+        </div>
+    </header>
+    <main class="shell dashboard">
+        <div class="notice notice-success" th:if="${mensaje}" th:text="${mensaje}" data-dismiss></div>
+        <div class="admin-shortcuts"><a class="button button-light" th:href="@{/admin}">← Volver al panel</a></div>
+        <section class="panel" style="margin-bottom:18px">
+            <h2 th:text="${modoEdicion} ? 'Editar producto' : 'Agregar producto'">Agregar producto</h2>
+            <form th:action="@{/admin/productos}" th:object="${productoForm}" method="post">
+                <input type="hidden" th:field="*{idProducto}">
+                <div class="admin-form-grid">
+                    <div class="field"><label for="nombre">Nombre</label><input id="nombre" th:field="*{nombre}" maxlength="120" required><p class="field-error" th:errors="*{nombre}"></p></div>
+                    <div class="field"><label for="marca">Marca</label><input id="marca" th:field="*{marca}" maxlength="60"><p class="field-error" th:errors="*{marca}"></p></div>
+                    <div class="field"><label for="precio">Precio</label><input id="precio" th:field="*{precio}" type="number" min="0" step="0.01" required><p class="field-error" th:errors="*{precio}"></p></div>
+                    <div class="field"><label for="imagenUrl">Imagen URL</label><input id="imagenUrl" th:field="*{imagenUrl}" maxlength="255"><p class="field-error" th:errors="*{imagenUrl}"></p></div>
+                    <div class="field"><label for="idDeporte">Deporte</label><select id="idDeporte" th:field="*{idDeporte}" required><option value="">Selecciona un deporte</option><option th:each="deporte : ${deportes}" th:value="${deporte.idDeporte}" th:text="${deporte.nombre}"></option></select><p class="field-error" th:errors="*{idDeporte}"></p></div>
+                    <div class="field"><label for="idCategoria">Categoría</label><select id="idCategoria" th:field="*{idCategoria}" required><option value="">Selecciona una categoría</option><option th:each="categoria : ${categorias}" th:value="${categoria.idCategoria}" th:text="${categoria.nombre}"></option></select><p class="field-error" th:errors="*{idCategoria}"></p></div>
+                </div>
+                <div class="field"><label for="descripcion">Descripción</label><textarea id="descripcion" th:field="*{descripcion}" rows="3"></textarea></div>
+                <div class="field"><label><input type="checkbox" th:field="*{activo}"> Producto visible en el catálogo</label></div>
+                <button class="button" type="submit" th:text="${modoEdicion} ? 'Guardar cambios' : 'Crear producto'">Crear producto</button>
+                <a class="button button-light" th:if="${modoEdicion}" th:href="@{/admin/productos}">Cancelar</a>
+            </form>
+        </section>
+        <section class="panel">
+            <h2>Catálogo de productos</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Producto</th><th>Marca</th><th>Precio</th><th>Deporte</th><th>Visibilidad</th><th>Acciones</th></tr></thead>
+                    <tbody>
+                        <tr th:each="producto : ${productos}">
+                            <td th:text="${producto.nombre}">Producto</td>
+                            <td th:text="${producto.marca != null ? producto.marca : '—'}">Marca</td>
+                            <td th:text="${'$ ' + #numbers.formatDecimal(producto.precio, 1, 'POINT', 2, 'COMMA')}">$0</td>
+                            <td th:text="${producto.deporte.nombre}">Deporte</td>
+                            <td><span class="status" th:text="${producto.activo ? 'Publicado' : 'Oculto'}">Publicado</span></td>
+                            <td>
+                                <div style="display:flex;gap:8px;align-items:center">
+                                    <a class="button button-small" th:href="@{/admin/productos/{id}/editar(id=${producto.idProducto})}">Editar</a>
+                                    <form th:action="@{/admin/productos/{id}/estado(id=${producto.idProducto})}" method="post">
+                                        <button class="button button-light button-small" type="submit"
+                                                th:text="${producto.activo ? 'Ocultar' : 'Publicar'}">Ocultar</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(productos)}"><td colspan="6">Agrega el primer producto para completar tu catálogo.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

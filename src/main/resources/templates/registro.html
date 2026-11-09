@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Crea tu cuenta | VALOOR</title>
+    <link rel="stylesheet" th:href="@{/css/valoor.css}">
+    <script defer th:src="@{/js/valoor.js}"></script>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: navigation}"></div>
+    <main class="shell">
+        <section class="auth-wrap">
+            <aside class="auth-art">
+                <div class="auth-art-content">
+                    <a class="brand" th:href="@{/}"><span class="brand-mark">V</span><span>VALOOR</span></a>
+                    <h1>Actívate. Equípate. Supérate.</h1>
+                    <p>Una cuenta para encontrar lo que necesitas y seguir el recorrido de tus pedidos.</p>
+                </div>
+                <div class="auth-art-foot"><span class="eyebrow">Tu deporte, tu ritmo</span></div>
+            </aside>
+            <div class="auth-form">
+                <span class="eyebrow">Únete a la comunidad</span>
+                <h2>Crea tu cuenta</h2>
+                <p class="muted">Regístrate gratis como cliente VALOOR.</p>
+                <form th:action="@{/registro}" th:object="${registroRequest}" method="post">
+                    <div class="field">
+                        <label for="nombre">Nombre completo</label>
+                        <input id="nombre" th:field="*{nombre}" autocomplete="name" maxlength="100" required>
+                        <p class="field-error" th:errors="*{nombre}"></p>
+                    </div>
+                    <div class="field">
+                        <label for="email">Correo electrónico</label>
+                        <input id="email" th:field="*{email}" type="email" autocomplete="email" maxlength="120" required>
+                        <p class="field-error" th:errors="*{email}"></p>
+                    </div>
+                    <div class="field">
+                        <label for="telefono">Teléfono <span class="muted">(opcional)</span></label>
+                        <input id="telefono" th:field="*{telefono}" autocomplete="tel" maxlength="20">
+                        <p class="field-error" th:errors="*{telefono}"></p>
+                    </div>
+                    <div class="field">
+                        <label for="direccion">Dirección <span class="muted">(opcional)</span></label>
+                        <input id="direccion" th:field="*{direccion}" autocomplete="street-address" maxlength="200">
+                        <p class="field-error" th:errors="*{direccion}"></p>
+                    </div>
+                    <div class="field password-field">
+                        <label for="contrasena">Contraseña</label>
+                        <input id="contrasena" th:field="*{contrasena}" type="password"
+                               autocomplete="new-password" minlength="12" maxlength="72" required>
+                        <button class="password-toggle" type="button" data-password-toggle="contrasena">Mostrar</button>
+                        <p class="field-error" th:errors="*{contrasena}"></p>
+                    </div>
+                    <div class="field">
+                        <label for="confirmarContrasena">Confirma tu contraseña</label>
+                        <input id="confirmarContrasena" th:field="*{confirmarContrasena}" type="password"
+                               autocomplete="new-password" maxlength="72" required>
+                        <p class="field-error" th:errors="*{confirmarContrasena}"></p>
+                    </div>
+                    <button class="button" type="submit">Crear cuenta <span aria-hidden="true">→</span></button>
+                </form>
+                <p class="muted" style="margin-top:18px">¿Ya tienes cuenta? <a class="eyebrow" th:href="@{/login}">Inicia sesión</a></p>
+            </div>
+        </section>
+    </main>
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

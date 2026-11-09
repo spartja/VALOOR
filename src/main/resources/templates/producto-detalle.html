@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${producto.nombre + ' | VALOOR'}">Producto | VALOOR</title>
+    <link rel="stylesheet" th:href="@{/css/valoor.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: navigation}"></div>
+    <main class="shell">
+        <p style="margin:28px 0;color:var(--muted)"><a th:href="@{/catalogo}">← Volver al catálogo</a></p>
+        <section class="detail-layout">
+            <div class="detail-image">
+                <img th:if="${producto.imagenUrl != null and !producto.imagenUrl.isBlank()}"
+                     th:src="${producto.imagenUrl}" th:alt="${producto.nombre}">
+                <span th:unless="${producto.imagenUrl != null and !producto.imagenUrl.isBlank()}"
+                      class="image-placeholder" aria-hidden="true">◈</span>
+            </div>
+            <div class="detail-copy">
+                <span class="eyebrow" th:text="${producto.deporte.nombre + ' · ' + producto.categoria.nombre}">Deporte · Categoría</span>
+                <h1 th:text="${producto.nombre}">Producto</h1>
+                <p class="detail-brand" th:text="${producto.marca != null ? producto.marca : 'VALOOR'}">Marca</p>
+                <div class="detail-price"
+                     th:text="${'$ ' + #numbers.formatDecimal(producto.precio, 1, 'POINT', 2, 'COMMA')}">$ 0,00</div>
+                <p class="detail-description" th:text="${producto.descripcion != null ? producto.descripcion : 'Diseñado para acompañarte en cada entrenamiento.'}">
+                    Descripción
+                </p>
+                <h2>Tallas y disponibilidad</h2>
+                <div class="size-list">
+                    <span class="size-chip" th:each="fila : ${tallas}">
+                        <strong th:text="${fila.talla}">M</strong>
+                        <small th:text="${fila.stock > 0 ? fila.stock + ' disponibles' : 'Agotado'}">Disponibles</small>
+                    </span>
+                </div>
+                <p class="muted" th:if="${#lists.isEmpty(tallas)}">Consulta disponibilidad con nuestro equipo.</p>
+                <a class="button" th:if="${usuarioAutenticado == null}" th:href="@{/login}">
+                    Inicia sesión para continuar <span aria-hidden="true">→</span>
+                </a>
+                <a class="button" th:if="${usuarioAutenticado != null and !esAdministrador}" th:href="@{/mis-pedidos}">
+                    Consultar mis pedidos <span aria-hidden="true">→</span>
+                </a>
+            </div>
+        </section>
+    </main>
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

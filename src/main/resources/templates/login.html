@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Iniciar sesión | VALOOR</title>
+    <link rel="stylesheet" th:href="@{/css/valoor.css}">
+    <script defer th:src="@{/js/valoor.js}"></script>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: navigation}"></div>
+    <main class="shell">
+        <section class="auth-wrap">
+            <aside class="auth-art">
+                <div class="auth-art-content">
+                    <a class="brand" th:href="@{/}"><span class="brand-mark">V</span><span>VALOOR</span></a>
+                    <h1>Tu próxima meta está más cerca.</h1>
+                    <p>Entra a tu cuenta y sigue avanzando con el equipo adecuado.</p>
+                </div>
+                <div class="auth-art-foot"><span class="eyebrow">Rendimiento para todos los días</span></div>
+            </aside>
+            <div class="auth-form">
+                <span class="eyebrow">Qué bueno tenerte de vuelta</span>
+                <h2>Iniciar sesión</h2>
+                <p class="muted">Usa el correo asociado a tu cuenta VALOOR.</p>
+                <div class="notice notice-success" th:if="${registroExitoso}" data-dismiss>
+                    Tu cuenta se creó correctamente. Ya puedes iniciar sesión.
+                </div>
+                <div class="notice notice-error" th:if="${param.error}">
+                    Correo o contraseña incorrectos. Verifica tus datos e inténtalo otra vez.
+                </div>
+                <div class="notice notice-success" th:if="${param.logout}" data-dismiss>
+                    Cerraste sesión de forma segura.
+                </div>
+                <form th:action="@{/login}" method="post">
+                    <div class="field">
+                        <label for="email">Correo electrónico</label>
+                        <input id="email" name="email" type="email" autocomplete="username"
+                               placeholder="nombre@correo.com" required autofocus>
+                    </div>
+                    <div class="field password-field">
+                        <label for="password">Contraseña</label>
+                        <input id="password" name="password" type="password" autocomplete="current-password"
+                               placeholder="Tu contraseña" required>
+                        <button class="password-toggle" type="button" data-password-toggle="password">Mostrar</button>
+                    </div>
+                    <button class="button" type="submit">Entrar a mi cuenta <span aria-hidden="true">→</span></button>
+                </form>
+                <p class="muted" style="margin-top:22px">¿Aún no tienes cuenta? <a class="eyebrow" th:href="@{/registro}">Regístrate</a></p>
+            </div>
+        </section>
+    </main>
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

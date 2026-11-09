@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Panel de administración | VALOOR</title>
+    <link rel="stylesheet" th:href="@{/css/valoor.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: navigation}"></div>
+    <header class="admin-header">
+        <div class="shell">
+            <span class="eyebrow">Centro de control</span>
+            <h1>Panel de administración</h1>
+            <p>Gestiona el catálogo y mantén cada pedido en movimiento.</p>
+        </div>
+    </header>
+    <main class="shell dashboard">
+        <nav class="admin-shortcuts" aria-label="Administración">
+            <a class="button" th:href="@{/admin/productos}">Gestionar productos <span aria-hidden="true">→</span></a>
+            <a class="button button-light" th:href="@{/api/deportes}">API de deportes</a>
+            <a class="button button-light" th:href="@{/api/categorias}">API de categorías</a>
+            <a class="button button-light" th:href="@{/api/pedidos/reportes/ventas}">Reporte de ventas</a>
+        </nav>
+        <section class="stat-grid" aria-label="Resumen">
+            <article class="stat-card"><span>Productos en catálogo</span><strong th:text="${totalProductos}">0</strong></article>
+            <article class="stat-card"><span>Cuentas registradas</span><strong th:text="${totalUsuarios}">0</strong></article>
+            <article class="stat-card"><span>Tallas con stock bajo</span><strong th:text="${#lists.size(productosBajoStock)}">0</strong></article>
+        </section>
+        <section class="dashboard-grid">
+            <article class="panel">
+                <h2>Alertas de inventario</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Producto</th><th>Talla</th><th>Disponible</th><th>Mínimo</th></tr></thead>
+                        <tbody>
+                            <tr th:each="fila : ${productosBajoStock}">
+                                <td th:text="${fila.producto.nombre}">Producto</td>
+                                <td th:text="${fila.talla}">UNICA</td>
+                                <td><span class="status" th:text="${fila.stock}">0</span></td>
+                                <td th:text="${fila.stockMinimo}">5</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(productosBajoStock)}"><td colspan="4">Todo el inventario está por encima del mínimo.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+            <article class="panel">
+                <h2>Pedidos recientes</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Pedido</th><th>Cliente</th><th>Fecha</th><th>Estado</th><th>Total</th></tr></thead>
+                        <tbody>
+                            <tr th:each="pedido : ${pedidosRecientes}">
+                                <td th:text="${'#' + pedido.idPedido}">#0</td>
+                                <td th:text="${pedido.usuario.nombre}">Cliente</td>
+                                <td th:text="${pedido.fecha != null ? #temporals.format(pedido.fecha, 'dd/MM/yyyy') : '—'}">—</td>
+                                <td><span class="status" th:text="${pedido.estado}">PENDIENTE</span></td>
+                                <td th:text="${'$ ' + #numbers.formatDecimal(pedido.total, 1, 'POINT', 2, 'COMMA')}">$ 0</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(pedidosRecientes)}"><td colspan="5">Todavía no hay pedidos registrados.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </section>
+    </main>
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>
