@@ -12,7 +12,7 @@ Gestión de pedidos: registrar pedidos y controlar sus estados: pendiente, confi
 Reportes básicos: consultar información relacionada con las ventas y los movimientos comerciales.
 Estas funcionalidades corresponden al alcance propuesto para el prototipo y se implementarán progresivamente.
 
- Tecnologías utilizadas : Java 17, Spring Boot, MySQL, Visual Studio Code, Postman, Git y GitHub.
+ Tecnologías utilizadas : Java 27, Spring Boot, MySQL, Visual Studio Code, Postman, Git y GitHub.
  Configuración de la base de datos
 
 Crear una base de datos en MySQL con el siguiente nombre: valoor_db.
@@ -20,7 +20,7 @@ Después, configurar las credenciales de conexión en el archivo application.pro
 src/main/resources/application.properties.
 Una vez configurada la base de datos, seguir estos pasos:
 Paso 1. Abrir la carpeta del proyecto VALOOR en Visual Studio Code.
-Paso 2. Verificar que Java 17 esté instalado: java - version
+Paso 2. Verificar que Java 27 esté instalado: `java -version`
 Ejecutar la aplicación: .\mvnw.cmd spring-boot:run
 Cuando la aplicación inicie correctamente, estará disponible en: http://localhost:8080
 
@@ -30,5 +30,18 @@ También se podrá utilizar Postman para verificar el funcionamiento de los serv
 VALOOR está orientado a la gestión de productos, inventarios y pedidos de una tienda de artículos deportivos. En esta primera versión no se contempla la integración con pasarelas de pago reales, aplicaciones móviles nativas ni servicios de logística y transporte.
 
 El proyecto se encuentra en desarrollo académico y sus funcionalidades se incorporarán de acuerdo con las etapas de implementación.
+
+## Chatbot Gemini
+
+Configure `GEMINI_API_KEY` como variable de entorno del servidor antes de iniciar la aplicación. La clave no debe agregarse al repositorio ni a la aplicación móvil.
+
+Como el proyecto no ejecuta migraciones automáticamente (`spring.jpa.hibernate.ddl-auto=none`), aplique una sola vez `src/main/resources/db/chat_sessions.sql` a la base `valoor` existente. No vuelva a ejecutar `src/db/valoor_db.sql` sobre una base con datos: ese script elimina y recrea la base.
+
+Los endpoints de chat requieren una sesión autenticada de Spring Security y, para operaciones que modifican datos, el token CSRF configurado por la aplicación:
+
+- `POST /api/chat/sessions` con `{"chatbotType":"ENTRENADOR"}`
+- `POST /api/chat/sessions/{sessionId}/messages` con `{"message":"¿Qué equipo básico necesito para natación?"}`
+- `GET /api/chat/sessions/{sessionId}/history`
+- `DELETE /api/chat/sessions/{sessionId}`
 
 
